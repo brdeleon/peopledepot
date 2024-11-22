@@ -9,20 +9,47 @@ from rest_framework import viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from ..models import Affiliate
+from ..models import Affiliation
+from ..models import CheckType
+from ..models import Event
 from ..models import Faq
 from ..models import FaqViewed
 from ..models import Location
+from ..models import PermissionType
+from ..models import PracticeArea
+from ..models import ProgramArea
 from ..models import Project
-from ..models import RecurringEvent
-from ..models import SponsorPartner
+from ..models import Sdg
+from ..models import Skill
+from ..models import SocMajor
+from ..models import StackElement
+from ..models import StackElementType
+from ..models import UrlType
+from ..models import UserPermission
+from ..models import UserStatusType
+from .serializers import AffiliateSerializer
+from .serializers import AffiliationSerializer
+from .serializers import CheckTypeSerializer
+from .serializers import EventSerializer
 from .serializers import FaqSerializer
 from .serializers import FaqViewedSerializer
 from .serializers import LocationSerializer
+from .serializers import PermissionTypeSerializer
+from .serializers import PracticeAreaSerializer
+from .serializers import ProgramAreaSerializer
 from .serializers import ProjectSerializer
-from .serializers import RecurringEventSerializer
-from .serializers import SponsorPartnerSerializer
+from .serializers import SdgSerializer
+from .serializers import SkillSerializer
+from .serializers import SocMajorSerializer
+from .serializers import StackElementSerializer
+from .serializers import StackElementTypeSerializer
+from .serializers import UrlTypeSerializer
+from .serializers import UserPermissionSerializer
 from .serializers import UserSerializer
+from .serializers import UserStatusTypeSerializer
 
 
 class UserProfileAPIView(RetrieveModelMixin, GenericAPIView):
@@ -115,31 +142,47 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-    list=extend_schema(description="Return a list of all the recurring events"),
-    create=extend_schema(description="Create a new recurring event"),
-    retrieve=extend_schema(description="Return the details of a recurring event"),
-    destroy=extend_schema(description="Delete a recurring event"),
-    update=extend_schema(description="Update a recurring event"),
-    partial_update=extend_schema(description="Patch a recurring event"),
+    list=extend_schema(description="Return a list of all the events"),
+    create=extend_schema(description="Create a new event"),
+    retrieve=extend_schema(description="Return the details of an event"),
+    destroy=extend_schema(description="Delete an event"),
+    update=extend_schema(description="Update an event"),
+    partial_update=extend_schema(description="Patch an event"),
 )
-class RecurringEventViewSet(viewsets.ModelViewSet):
+class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = RecurringEvent.objects.all()
-    serializer_class = RecurringEventSerializer
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
 
 
 @extend_schema_view(
-    list=extend_schema(description="Return a list of all the sponsor partners"),
-    create=extend_schema(description="Create a new sponsor partner"),
-    retrieve=extend_schema(description="Return the details of a sponsor partner"),
-    destroy=extend_schema(description="Delete a sponsor partner"),
-    update=extend_schema(description="Update a sponsor partner"),
-    partial_update=extend_schema(description="Patch a sponsor partner"),
+    list=extend_schema(description="Return a list of all the practice areas"),
+    create=extend_schema(description="Create a new sponsor practice area"),
+    retrieve=extend_schema(description="Return the details of a practice area"),
+    destroy=extend_schema(description="Delete a practice area"),
+    update=extend_schema(description="Update a practice area"),
+    partial_update=extend_schema(
+        description="Patch (partially update) a practice area"
+    ),
 )
-class SponsorPartnerViewSet(viewsets.ModelViewSet):
+class PracticeAreaViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = PracticeArea.objects.all()
+    serializer_class = PracticeAreaSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the affiliates"),
+    create=extend_schema(description="Create a new affiliate"),
+    retrieve=extend_schema(description="Return the details of a affiliate"),
+    destroy=extend_schema(description="Delete a affiliate"),
+    update=extend_schema(description="Update a affiliate"),
+    partial_update=extend_schema(description="Patch a affiliate"),
+)
+class AffiliateViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = SponsorPartner.objects.all()
-    serializer_class = SponsorPartnerSerializer
+    queryset = Affiliate.objects.all()
+    serializer_class = AffiliateSerializer
 
     # The following code can be uncommented and used later, but it's being left out
     # for simplicity's sake during initial model creation
@@ -148,7 +191,7 @@ class SponsorPartnerViewSet(viewsets.ModelViewSet):
     #     """
     #     Optionally filter sponsor partners by name, is_active, and/or is_sponsor query parameters in the URL
     #     """
-    #     queryset = SponsorPartner.objects.all()
+    #     queryset = Affiliate.objects.all()
     #     partner_name = self.request.query_params.get("partner_name")
     #     if partner_name is not None:
     #         queryset = queryset.filter(partner_name=partner_name)
@@ -199,3 +242,167 @@ class LocationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the program areas"),
+    create=extend_schema(description="Create a new program area"),
+    retrieve=extend_schema(description="Return the details of a program area"),
+    destroy=extend_schema(description="Delete a program area"),
+    update=extend_schema(description="Update a program area"),
+    partial_update=extend_schema(description="Patch a program area"),
+)
+class ProgramAreaViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = ProgramArea.objects.all()
+    serializer_class = ProgramAreaSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all skills"),
+    create=extend_schema(description="Create a new skill"),
+    retrieve=extend_schema(description="Return the details of a skill"),
+    destroy=extend_schema(description="Delete a skill"),
+    update=extend_schema(description="Update a skill"),
+    partial_update=extend_schema(description="Patch a skill"),
+)
+class SkillViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the stack elements"),
+    create=extend_schema(description="Create a new stack element"),
+    retrieve=extend_schema(description="Return the details of a stack element"),
+    destroy=extend_schema(description="Delete a stack element"),
+    update=extend_schema(description="Update a stack element"),
+    partial_update=extend_schema(description="Patch a stack element"),
+)
+class StackElementViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = StackElement.objects.all()
+    serializer_class = StackElementSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all permission types"),
+    create=extend_schema(description="Create a new permission type"),
+    retrieve=extend_schema(description="Return the details of a permission type"),
+    destroy=extend_schema(description="Delete a permission type"),
+    update=extend_schema(description="Update a permission type"),
+    partial_update=extend_schema(description="Patch a permission type"),
+)
+class PermissionTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = PermissionType.objects.all()
+    serializer_class = PermissionTypeSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the stack element types"),
+    create=extend_schema(description="Create a new stack element type"),
+    retrieve=extend_schema(description="Return the details stack element type"),
+    destroy=extend_schema(description="Delete a stack element type"),
+    update=extend_schema(description="Update a stack element type"),
+    partial_update=extend_schema(description="Patch a stack element type"),
+)
+class StackElementTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = StackElementType.objects.all()
+    serializer_class = StackElementTypeSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the recurring events"),
+    create=extend_schema(description="Create a new recurring event"),
+    retrieve=extend_schema(description="Return the details of a recurring event"),
+    destroy=extend_schema(description="Delete a recurring event"),
+    update=extend_schema(description="Update a recurring event"),
+    partial_update=extend_schema(description="Patch a recurring event"),
+)
+class SdgViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Sdg.objects.all()
+    serializer_class = SdgSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the affiliations"),
+    create=extend_schema(description="Create a new affiliation"),
+    retrieve=extend_schema(description="Return the details of an affiliation"),
+    destroy=extend_schema(description="Delete an affiliation"),
+    update=extend_schema(description="Update an affiliation"),
+    partial_update=extend_schema(description="Patch an affiliation"),
+)
+class AffiliationViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Affiliation.objects.all()
+    serializer_class = AffiliationSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the check_type"),
+    create=extend_schema(description="Create a new check_type"),
+    retrieve=extend_schema(description="Return the details of an check_type"),
+    destroy=extend_schema(description="Delete an check_type"),
+    update=extend_schema(description="Update an check_type"),
+    partial_update=extend_schema(description="Patch an check_type"),
+)
+class CheckTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = CheckType.objects.all()
+    serializer_class = CheckTypeSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the user permissions"),
+    retrieve=extend_schema(description="Return the details of a user permission"),
+)
+class UserPermissionViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = []
+    queryset = UserPermission.objects.all()
+    serializer_class = UserPermissionSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the soc majors"),
+    create=extend_schema(description="Create a new soc major"),
+    retrieve=extend_schema(description="Return the details of a soc major"),
+    destroy=extend_schema(description="Delete a soc major"),
+    update=extend_schema(description="Update a soc major"),
+    partial_update=extend_schema(description="Patch a soc major"),
+)
+class SocMajorViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = SocMajor.objects.all()
+    serializer_class = SocMajorSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the url types"),
+    create=extend_schema(description="Create a new url type"),
+    retrieve=extend_schema(description="Return the details of a url type"),
+    destroy=extend_schema(description="Delete a url type"),
+    update=extend_schema(description="Update a url type"),
+    partial_update=extend_schema(description="Patch a url type"),
+)
+class UrlTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UrlType.objects.all()
+    serializer_class = UrlTypeSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(description="Return a list of all the user status types"),
+    create=extend_schema(description="Create a new user status type"),
+    retrieve=extend_schema(description="Return the details of a user status type"),
+    destroy=extend_schema(description="Delete a user status type"),
+    update=extend_schema(description="Update a user status type"),
+    partial_update=extend_schema(description="Patch a user status type"),
+)
+class UserStatusTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserStatusType.objects.all()
+    serializer_class = UserStatusTypeSerializer

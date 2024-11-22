@@ -5,13 +5,25 @@ from django.contrib.auth.forms import UserCreationForm as DefaultUserCreationFor
 from django.contrib.auth.forms import UsernameField
 from django.utils.translation import gettext_lazy as _
 
+from .models import Affiliate
+from .models import Affiliation
+from .models import CheckType
+from .models import Event
 from .models import Faq
 from .models import FaqViewed
 from .models import Location
+from .models import PermissionType
+from .models import PracticeArea
+from .models import ProgramArea
 from .models import Project
-from .models import RecurringEvent
-from .models import SponsorPartner
+from .models import Sdg
+from .models import Skill
+from .models import SocMajor
+from .models import StackElement
+from .models import StackElementType
+from .models import UrlType
 from .models import User
+from .models import UserStatusType
 
 
 class UserCreationForm(DefaultUserCreationForm):
@@ -114,8 +126,8 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(RecurringEvent)
-class RecurringEventAdmin(admin.ModelAdmin):
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "start_time",
@@ -123,14 +135,23 @@ class RecurringEventAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(SponsorPartner)
-class SponsorPartnerAdmin(admin.ModelAdmin):
+@admin.register(PracticeArea)
+class PracticeAreaAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "description",
+    )
+
+
+@admin.register(Affiliate)
+class AffiliateAdmin(admin.ModelAdmin):
     list_display = (
         "partner_name",
         "partner_logo",
         "is_active",
         "url",
-        "is_sponsor",
+        "is_org_sponsor",
+        "is_org_partner",
     )
 
 
@@ -159,3 +180,80 @@ class Location(admin.ModelAdmin):
         "zipcode",
         "phone",
     )
+
+
+@admin.register(ProgramArea)
+class ProgramAreaAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "image")
+
+
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "description",
+    )
+
+    list_filter = ("name",)
+
+
+@admin.register(StackElement)
+class StackElementAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "description",
+        "url",
+        "logo",
+        "active",
+    )
+
+
+@admin.register(PermissionType)
+class PermissionTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
+
+
+@admin.register(StackElementType)
+class StackElementType(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "description",
+    )
+
+
+@admin.register(Sdg)
+class SdgAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "image")
+
+
+@admin.register(Affiliation)
+class AffiliationAdmin(admin.ModelAdmin):
+    list_display = (
+        "affiliate",
+        "project",
+        "created_at",
+        "ended_at",
+        "is_sponsor",
+        "is_partner",
+    )
+    list_filter = ("is_sponsor", "is_partner", "affiliate", "project")
+
+
+@admin.register(CheckType)
+class CheckTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
+
+
+@admin.register(SocMajor)
+class SocMajorAdmin(admin.ModelAdmin):
+    list_display = ("occ_code", "title")
+
+
+@admin.register(UrlType)
+class UrlTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")
+
+
+@admin.register(UserStatusType)
+class UserStatusTypeAdmin(admin.ModelAdmin):
+    list_display = ("name", "description")

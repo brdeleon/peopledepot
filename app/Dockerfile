@@ -1,27 +1,32 @@
 # pull official base image
-FROM python:3.10-bullseye
+FROM python:3.10-alpine
 
 # set work directory
 WORKDIR /usr/src/app
 
 # set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPYCACHEPREFIX=/root/.cache/pycache/
 
 # install system dependencies
-RUN apt-get update \
-  && apt-get --no-install-recommends install -y \
-  netcat=1.10-46 \
-  gcc=4:10.2.1-1 \
-  postgresql=13+225 \
-  graphviz=2.42.2-5 \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+RUN \
+  --mount=type=cache,target=/var/cache/apk \
+  --mount=type=cache,target=/etc/apk/cache \
+  apk add \
+  'graphviz=~9.0'
+
+# install font for graphviz
+COPY Roboto-Regular.ttf /root/.fonts/
+RUN fc-cache -f
 
 # install dependencies
-RUN pip install --no-cache-dir pip~=21.3.1
 COPY ./requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# hadolint ignore=DL3042
+RUN \
+  --mount=type=cache,target=/root/.cache \
+  pip install uv==0.1.15 \
+  && uv pip install --system -r requirements.txt
 
 # copy entrypoint.sh
 COPY ./entrypoint.sh .

@@ -73,8 +73,10 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "phonenumber_field",
     "timezone_field",
+    "django_linear_migrations",
     # Local
     "core",
+    "data",
 ]
 
 MIDDLEWARE = [
